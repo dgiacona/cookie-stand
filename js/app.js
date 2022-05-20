@@ -22,6 +22,7 @@ function Store(storeLocation, minCust, maxCust, avgCookiesSale) {
   storeSelection.push(this);
 }
 
+
 Store.prototype.ranCustomerNum = function () {
   this.ranCustomerNum = `${ranCustomerNum(this.minCust, this.maxCust)}`;
 };
@@ -75,15 +76,42 @@ function tHeader() {
   totalTableHead.textContent = 'Daily Total';
 }
 
+function setTableFooter() {
+  let footElem = document.createElement('tfoot');
+  storeSection.appendChild(footElem);
+  let newRow = document.createElement('tr');
+  footElem.appendChild(newRow);
+
+  let tdElem = document.createElement('td');
+  tdElem.textContent = 'Totals';
+  newRow.appendChild(tdElem);
+
+  let grandTotal = 0;
+  for (let i = 0; i < hours.length; i++) {
+    let hTotal = 0;
+    for (let j = 0; j < storeSelection.length; j++) {
+      hTotal += storeSelection[j].cookieArray[i];
+      grandTotal += storeSelection[j].cookieArray[i];
+    }
+    let dataCell = document.createElement('td');
+    dataCell.textContent = `${hTotal}`;
+    newRow.appendChild(dataCell);
+  }
+  let totalCell = document.createElement('td');
+  totalCell.textContent = grandTotal;
+  newRow.appendChild(totalCell);
+}
+
 new Store('Seattle', 23, 65, 6.3);
 new Store('Tokyo', 3, 24, 1.2);
 new Store('Dubai', 11, 38, 3.7);
 new Store('Paris', 20, 38, 2.3);
 new Store('Lima', 2, 16, 4.6);
 
+
 tHeader();
 renderAllStores();
-
+setTableFooter();
 
 function handleSubmit(event) {
   event.preventDefault();
@@ -92,13 +120,12 @@ function handleSubmit(event) {
   let maxCust = +event.target.maxCust.value;
   let avgCookieSale = +event.target.maxCust.value;
   let storeLocation = event.target.storeLocation.value;
+  document.querySelector('tfoot').remove();
 
   let newLocation = new Store(storeLocation, minCust, maxCust, avgCookieSale);
 
-  newLocation.avgCookieSold();
   newLocation.render();
-  newLocation.renderAllStores();
-  newLocation.numCookiesSold();
+  setTableFooter();
 
   storeForm.reset();
 }
