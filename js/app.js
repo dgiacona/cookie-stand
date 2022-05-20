@@ -1,17 +1,17 @@
 'use strict';
-
+let storeForm = document.getElementById('store-form');
 let storeSection = document.getElementById('store-profiles');
 let hours = ['6am', '7am', '8am', '9am', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm'];
 console.log(storeSection);
 
 function ranCustomerNum(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+  return Math.ceil(Math.random() * (max - min + 1) + min);
 }
 
 let storeSelection = [];
 
-function Store(name, minCust, maxCust, avgCookiesSale) {
-  this.name = name;
+function Store(storeLocation, minCust, maxCust, avgCookiesSale) {
+  this.storeLocation = storeLocation;
   this.minCust = minCust;
   this.maxCust = maxCust;
   this.avgCookieSale = avgCookiesSale;
@@ -38,7 +38,7 @@ Store.prototype.render = function () {
   let trOneElem = document.createElement('tr');
   storeSection.appendChild(trOneElem);
   let dataCell = document.createElement('td');
-  dataCell.textContent = this.name;
+  dataCell.textContent = this.storeLocation;
   trOneElem.appendChild(dataCell);
 
 
@@ -83,3 +83,24 @@ new Store('Lima', 2, 16, 4.6);
 
 tHeader();
 renderAllStores();
+
+
+function handleSubmit(event) {
+  event.preventDefault();
+
+  let minCust = +event.target.minCust.value;
+  let maxCust = +event.target.maxCust.value;
+  let avgCookieSale = +event.target.maxCust.value;
+  let storeLocation = event.target.storeLocation.value;
+
+  let newLocation = new Store(storeLocation, minCust, maxCust, avgCookieSale);
+
+  newLocation.avgCookieSold();
+  newLocation.render();
+  newLocation.renderAllStores();
+  newLocation.numCookiesSold();
+
+  storeForm.reset();
+}
+
+storeForm.addEventListener('submit', handleSubmit);
